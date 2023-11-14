@@ -1,0 +1,44 @@
+/* styles/selection.css */
+
+/* Style the form container */
+form {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 5px;
+    margin-top:  5px;
+}
+
+input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Style the generate button */
+button {
+    margin-top: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+
+.canvas-container {
+    margin-top: 20px;
+}

@@ -1,0 +1,9 @@
+/* styles/productcanvas.css */
+
+canvas {
+    border: 1px solid #ddd; /* Add a border for visibility */
+    width: 100%; /* Make the canvas take up the full width of its container */
+    height: 600px; /* Set a fixed height for the canvas */
+    margin-top: 20px; /* Add some top margin for spacing */
+  }
+  
