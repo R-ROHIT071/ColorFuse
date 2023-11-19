@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import WebFont from 'webfontloader';
+
+
+
 import FilerobotImageEditor, {
   TABS,
   TOOLS, 
@@ -23,13 +27,14 @@ function Editor() {
 
   return (
     <div style={{ width: '100%', height: '95vh' }}>
-      {isImgEditorShown && loadedDesignState && (
+      {/* {isImgEditorShown && loadedDesignState && ( */}
+      {isImgEditorShown && (
         <FilerobotImageEditor
         loadableDesignState={loadedDesignState}
           source="https://scaleflex.airstore.io/demo/stephen-walker-unsplash.jpg"
           onSave={(editedImageObject, designState) =>
             (
-              localStorage.setItem('savedDesignState', JSON.stringify(designState))
+              console.log('savedDesignState', JSON.stringify(designState))
             )
           }
 
@@ -40,6 +45,19 @@ function Editor() {
 
           Text={
             { text: 'Editor...',
+            fontSize: 30,
+            fonts: [
+              { label: 'Arial', value: 'Arial' },
+              'Tahoma',
+              'Sans-serif',
+              { label: 'Comic Sans', value: 'Comic-sans' },
+              { label: 'Zombie Holocaust', value: 'Zombie_Holocaust' },
+            ],
+            align: 'center',
+
+            onFontChange: (newFontFamily, reRenderCanvasFn) => {
+              reRenderCanvasFn(); // Re-render the canvas with the new font
+            },
             
             }}
           Rotate={{ angle: 90, componentType: 'slider' }}
@@ -49,19 +67,18 @@ function Editor() {
                 titleKey: 'classicTv',
                 descriptionKey: '4:3',
                 ratio: 4 / 3,
-                // icon: CropClassicTv, // optional, CropClassicTv is a React Function component. Possible (React Function component, string or HTML Element)
+               
               },
               {
                 titleKey: 'cinemascope',
                 descriptionKey: '21:9',
                 ratio: 21 / 9,
-                // icon: CropCinemaScope, // optional, CropCinemaScope is a React Function component.  Possible (React Function component, string or HTML Element)
+               
               },
             ],
             presetsFolders: [
               {
-                titleKey: 'socialMedia', // will be translated into Social Media as backend contains this translation key
-                // icon: Social, // optional, Social is a React Function component. Possible (React Function component, string or HTML Element)
+                titleKey: 'socialMedia', 
                 groups: [
                   {
                     titleKey: 'facebook',
@@ -84,9 +101,9 @@ function Editor() {
               },
             ],
           }}
-          tabsIds={[TABS.ADJUST, TABS.ANNOTATE, TABS.WATERMARK,TABS.FILTERS,TABS.FINETUNE]} // or {['Adjust', 'Annotate', 'Watermark']}
-          defaultTabId={TABS.ANNOTATE} // or 'Annotate'
-          defaultToolId={TOOLS.TEXT} // or 'Text'
+          tabsIds={[TABS.ADJUST, TABS.ANNOTATE, TABS.WATERMARK,TABS.FILTERS,TABS.FINETUNE]}
+          defaultTabId={TABS.ANNOTATE} 
+          defaultToolId={TOOLS.TEXT}
         />
       )}
     </div>

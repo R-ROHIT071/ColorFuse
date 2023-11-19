@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { fabric } from 'fabric';
 import html2canvas from 'html2canvas';
-import './styles/productcanvas.css';
+import '../styles/productcanvas.css';
 
 function App(props) {
   const [selectedObject, setSelectedObject] = useState(null);
@@ -19,8 +19,10 @@ function App(props) {
 
     const images = [frontView, backView, sideView, ...additionalImages];
 
-    const separation = 5; // Adjust the separation between images as needed
-    let leftPosition = 0;
+    let separation = 50;
+    let leftPosition = 40;
+    let scaleToWidth = 300;
+    let topPositon =200
 
     // Load images onto the canvas with separation
     images.forEach((image, index) => {
@@ -28,14 +30,23 @@ function App(props) {
 
       imageUrlPromise.then((imageUrl) => {
         fabric.Image.fromURL(imageUrl, (productImage) => {
-          productImage.scaleToWidth(100);
+          productImage.scaleToWidth(scaleToWidth);
           productImage.set({
             selectable: true,
             evented: true,
-            top: 10,
-            left: 10,
+            top: topPositon,
+            left: leftPosition ,
           });
-          leftPosition += productImage.width + separation;
+          if (index > 2) {
+            scaleToWidth= 70
+            leftPosition += scaleToWidth + separation;
+          }else if(index == 2){
+            leftPosition =40
+            separation =25
+            topPositon =75
+          }else {
+            leftPosition += scaleToWidth + separation;
+          }
           canvas.add(productImage);
         });
       }).catch((error) => {
@@ -92,7 +103,7 @@ function App(props) {
 
 
     canvas.setDimensions({
-      width: window.innerWidth,
+      width: window.innerWidth * 0.98,
       height: window.innerHeight * 0.75,
     });
 
@@ -251,12 +262,12 @@ function App(props) {
   }
 
   return (
-    <div>
-      <section>
+    <div className='main-wrapper'>
+      <section className='canvas-wrapper'>
         <canvas id="productCanvas" />
       </section>
-      <div style={{ marginTop: '20px' }}>
-        <label htmlFor="rotationSlider">Hue Rotation:</label>
+      <div className='filter-wrapper'>
+        <label htmlFor="rotationSlider">Color Rotation:</label>
         <input
           type="range"
           id="rotationSlider"
@@ -268,7 +279,6 @@ function App(props) {
         />
         <span>{hueRotation} degrees</span>
         <br></br>
-        <button id='save_btn' >Save Canvas</button>
       </div>
     </div>
   );

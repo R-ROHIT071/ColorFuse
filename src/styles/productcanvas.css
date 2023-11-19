@@ -1,9 +1,26 @@
 /* styles/productcanvas.css */
 
 canvas {
-    border: 1px solid #ddd; /* Add a border for visibility */
-    width: 100%; /* Make the canvas take up the full width of its container */
-    height: 600px; /* Set a fixed height for the canvas */
-    margin-top: 20px; /* Add some top margin for spacing */
+    border: 1px solid #000000; 
+    width: 100%;
+    height: 600px;
+
+  }
+
+  .main-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   
+  .filter-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    width: 450px;
+    padding: 20px;
+    margin: 20px;
+    margin-top: 40px;
+  }

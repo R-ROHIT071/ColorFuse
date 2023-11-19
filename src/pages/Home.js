@@ -1,0 +1,158 @@
+// src/components/HomePage.js
+
+import React, { useEffect, useState } from 'react';
+import { Animator, ScrollContainer, ScrollPage, batch, Fade, FadeIn, FadeOut, Move, MoveIn, MoveOut, Sticky, StickyIn, StickyOut, Zoom, ZoomIn, ZoomOut } from "react-scroll-motion";
+import { Button, Container, Row, Col, Navbar, Nav, Image } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import '../styles/home.css';
+
+const HomePage = () => {
+    const FadeUp = batch(Fade(), Move(0,1000), Sticky());
+    const FadeUptwo = batch(Fade(), MoveOut(0, -500), Sticky());
+
+
+    return (
+        <>
+            <Navbar bg="dark" variant="dark">
+                <Container>
+                    <Navbar.Brand href="/">
+                        <img
+                            alt=""
+                            src="/images/logo.jpg"
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            style={{ borderRadius: '100%', marginRight: '10px' }}
+                        />{' '}
+                        ColorFuse
+                    </Navbar.Brand>
+                    <Nav className="ml-auto">
+                        <Nav.Link href="">About</Nav.Link>
+                        <Nav.Link href="">Contact</Nav.Link>
+                    </Nav>
+                </Container>
+            </Navbar>
+
+            <ScrollContainer>
+                <Container fluid className="homepage-background position-relative">
+                    {/* Welcome Text */}
+                    <ScrollPage>
+                        <Animator animation={batch(Fade(), Sticky(), MoveOut(0, -2000))}>
+                            <div className="centered-text">
+                                <h1 style={{ fontSize: '60px' }}>Welcome to ColorFuse</h1>
+                                <h4>Your platform for AI-generated creativity!</h4>
+                            </div>
+                        </Animator>
+                    </ScrollPage>
+
+                </Container>
+
+                {/* Features Section */}
+                <ScrollPage>
+                    <Animator animation={FadeUp}>
+
+                        {/* AI Poster Generation Feature */}
+                        <Container className="features-section mt-5 text-center">
+                            <Row>
+                                <Col md={6}>
+                                    <div className="features-box">
+                                        <div className="text-container">
+                                            <h2 style={{ width: '500px' }}>AI Poster Generation</h2>
+                                            <p>
+                                                Transform your ideas into stunning posters with the power of
+                                                artificial intelligence. Our AI-powered poster generation
+                                                ensures that your designs are not only visually appealing but
+                                                also tailored to your unique needs.
+                                            </p>
+                                            <Button
+                                                variant="primary"
+                                                size="lg"
+                                                as={NavLink}
+                                                to="/poster"
+                                                className="poster-button"
+                                            >
+                                                Generate Posters
+                                            </Button>
+                                        </div>
+                                        <img
+                                            src="/ai.jpg"
+                                            alt="AI Poster Generation"
+                                            className="feature-image"
+                                        />
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Animator>
+                </ScrollPage>
+
+                {/* Product Branding Feature */}
+                <ScrollPage>
+                    <Animator animation={FadeUptwo}>
+                        <Container className="features-section mt-5 text-center">
+                            <Row>
+                                <Col md={6}>
+                                    <div className="features-box">
+                                        <div className="text-container">
+                                            <h2 style={{ width: '500px' }}>Product Branding</h2>
+                                            <p>
+                                                Give your products a unique identity with our custom branding
+                                                solutions. Whether you're launching a new product or
+                                                rebranding, our tools provide you with the flexibility to
+                                                create a brand that resonates with your audience.
+                                            </p>
+                                            <Button
+                                                variant="success"
+                                                size="lg"
+                                                as={NavLink}   // Use NavLink instead of Link
+                                                to="/product"
+                                                className="brand-button"
+                                            >
+                                                Brand My Product
+                                            </Button>
+                                        </div>
+                                        <img
+                                            src="/pro.jpg"
+                                            alt="Product Branding"
+                                            className="feature-image"
+                                        />
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Animator>
+                </ScrollPage>
+
+            </ScrollContainer>
+
+                {/* About Section */}
+                <Container className="about-section mt-5 text-center">
+                    <Row>
+                        <Col md={12}>
+                            <div className="about-box">
+                                <h2>About Us</h2>
+                                <p>ColorFuse is a revolutionary platform that leverages artificial intelligence</p>
+                                  <p>to bring creativity to new heights. Our mission is to empower individuals and</p>  
+                                  <p> businesses with unique and innovative design solutions.</p>  
+                                
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+
+            {/* Footer */}
+            <footer className="footer mt-5 text-center">
+                <Container>
+                    <Row>
+                        <Col md={12}>
+                            <span>&copy; 2023 ColorFuse. All rights reserved. </span>
+                            <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+                        </Col>
+                    </Row>
+                </Container>
+            </footer>
+        </>
+    );
+};
+
+export default HomePage;
