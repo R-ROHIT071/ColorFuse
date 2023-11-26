@@ -3,6 +3,7 @@ import { Button, Container, Row, Col, Navbar, Nav, Form } from 'react-bootstrap'
 import '../styles/selection.css';
 import ProductCanvas from "./ProductCanvas";
 
+
 function Selection() {
     const [selectedImages, setSelectedImages] = useState({
         frontView: null,
@@ -53,10 +54,8 @@ function Selection() {
                         ColorFuse
                     </Navbar.Brand>
                     <Nav className="ml-auto">
-                        <Nav.Link href="">About</Nav.Link>
-                        <Nav.Link href="">Contact</Nav.Link>
+                        {showSaveButton && <Nav.Link id="save_link">Export & Save Canvas</Nav.Link>}
                     </Nav>
-                    {showSaveButton && <button id="save_btn">Save Canvas</button>}
                 </Container>
             </Navbar>
 
@@ -69,7 +68,7 @@ function Selection() {
                     </div>
                 }
             </Container>
-            {!Canvas && (   <div class="blurry-image"></div>)}
+            {!Canvas && (   <div className="blurry-image"></div>)}
             <Container>
                 {!Canvas && (
                         <div className="form-container">

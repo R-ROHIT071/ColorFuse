@@ -2,13 +2,42 @@
 
 import React, { useEffect, useState } from 'react';
 import { Animator, ScrollContainer, ScrollPage, batch, Fade, FadeIn, FadeOut, Move, MoveIn, MoveOut, Sticky, StickyIn, StickyOut, Zoom, ZoomIn, ZoomOut } from "react-scroll-motion";
-import { Button, Container, Row, Col, Navbar, Nav, Image } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { Button, Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
+import { NavLink, Link } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from 'react-redux';
+import { auth } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 import '../styles/home.css';
 
 const HomePage = () => {
-    const FadeUp = batch(Fade(), Move(0,1000), Sticky());
+    const FadeUp = batch(Fade(), Move(0, 1000), Sticky());
     const FadeUptwo = batch(Fade(), MoveOut(0, -500), Sticky());
+
+    const [Active, setActive] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setActive(true)
+            } else {
+                setActive(false)
+            }
+        });
+    })
+
+    const handleFirebaseLogout = async () => {
+        try {
+            await auth.signOut();
+            dispatch({ type: 'SET_POSTER_DATA', payload: null });
+            dispatch({ type: 'SET_IMAGE_DATA', payload: null });
+            navigate('/');
+        } catch (error) {
+            console.error('Error logging out:', error.message);
+        }
+    };
 
 
     return (
@@ -27,8 +56,8 @@ const HomePage = () => {
                         ColorFuse
                     </Navbar.Brand>
                     <Nav className="ml-auto">
-                        <Nav.Link href="">About</Nav.Link>
-                        <Nav.Link href="">Contact</Nav.Link>
+                        {Active && <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>}
+                        {Active && <Nav.Link onClick={handleFirebaseLogout}>Logout</Nav.Link>}
                     </Nav>
                 </Container>
             </Navbar>
@@ -125,20 +154,20 @@ const HomePage = () => {
 
             </ScrollContainer>
 
-                {/* About Section */}
-                <Container className="about-section mt-5 text-center">
-                    <Row>
-                        <Col md={12}>
-                            <div className="about-box">
-                                <h2>About Us</h2>
-                                <p>ColorFuse is a revolutionary platform that leverages artificial intelligence</p>
-                                  <p>to bring creativity to new heights. Our mission is to empower individuals and</p>  
-                                  <p> businesses with unique and innovative design solutions.</p>  
-                                
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
+            {/* About Section */}
+            <Container className="about-section mt-5 text-center">
+                <Row>
+                    <Col md={12}>
+                        <div className="about-box">
+                            <h2>About Us</h2>
+                            <p>ColorFuse is a revolutionary platform that leverages artificial intelligence</p>
+                            <p>to bring creativity to new heights. Our mission is to empower individuals and</p>
+                            <p> businesses with unique and innovative design solutions.</p>
+
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
 
             {/* Footer */}
             <footer className="footer mt-5 text-center">

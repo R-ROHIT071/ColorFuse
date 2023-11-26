@@ -1,8 +1,12 @@
-import '../styles/signup.css'
+import '../styles/signup.css';
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../firebase';
+import { Form, Button, Container, Row, Col, Navbar, Nav, InputGroup } from 'react-bootstrap';
+import { FaEnvelope, FaLock, FaUser, FaPhone, FaQuestion } from 'react-icons/fa';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
+import { auth, database, ref as dbRef, set,push } from '../firebase';
+import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,8 +17,17 @@ const AuthForm = () => {
     phone: '',
   });
 
+
+  const navigate = useNavigate();
+  
+  // For Background changing
   useEffect(() => {
-    document.body.style.backgroundColor = isLogin ? '#ff6347' : '#87cefa';
+    const backgroundImageLogin = `url(${require('../images/login.jpg')})`;
+    const backgroundImageNotLogin = `url(${require('../images/signup2.jpg')})`;
+    const elem = document.getElementById('hyper-main')
+    elem.style.transition = 'background-image 0.5s ease-in-out';
+
+    elem.style.backgroundImage = isLogin ? backgroundImageLogin : backgroundImageNotLogin;
   }, [isLogin]);
 
   const handleChange = (e) => {
@@ -33,7 +46,6 @@ const AuthForm = () => {
     try {
       await sendPasswordResetEmail(auth, formData.email);
       console.log('Password reset email sent successfully');
-
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -48,17 +60,25 @@ const AuthForm = () => {
       if (isLogin) {
         // Login
         const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-        const user = userCredential.user;
-        alert('User logged in:', user);
+        const userId = userCredential.user.uid;
+        console.log("User logged in!")
+        localStorage.setItem('UID',userId)
+        navigate('/dashboard');
+
       } else {
         // Sign up
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
-        const user = userCredential.user;
-        console.log('User signed up:', user);
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        const { name, phone } = formData;
+        await updateProfile(userCredential.user, { displayName: name });
+
+        const userId = userCredential.user.uid;
+        await set(dbRef(database, `users/${userId}`), {
+          name,
+          phone,
+        });
+        console.log('User signed up:', userCredential.user);
+        localStorage.setItem('UID',userId)
+        navigate('/dashboard');
       }
     } catch (error) {
       const errorCode = error.code;
@@ -68,76 +88,118 @@ const AuthForm = () => {
   };
 
   return (
-    <Container>
-      <Row className="justify-content-md-center">
-        <Col md={6} className={`auth-form ${isLogin ? 'login' : 'signup'}`}>
-          <h2 style={{textAlign: 'center'}}>{isLogin ? 'Login' : 'Sign Up'}</h2>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </Form.Group>
+    <>
+      <Navbar bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand href="/">
+            <img
+              alt=""
+              src="/images/logo.jpg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              style={{ borderRadius: '100%', marginRight: '10px' }}
+            />
+            ColorFuse
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </Form.Group>
-
-            {!isLogin && (
-              <>
-                <Form.Group controlId="formBasicName">
-                  <Form.Label>Name</Form.Label>
+      <div id='hyper-main'>
+        <Container>
+          <Row className="justify-content-md-center">
+            <Col md={6} className={`auth-form ${isLogin ? 'login' : 'signup'}`}>
+              <h2 style={{ textAlign: 'center' }}>{isLogin ? 'Login' : 'Sign Up'}</h2>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formBasicEmail">
+                  <div className="icon-prepend">
+                    <FaEnvelope />
+                  </div>
                   <Form.Control
-                    type="text"
-                    placeholder="Enter your name"
-                    name="name"
-                    value={formData.name}
+                    type="email"
+                    placeholder="Enter email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formBasicPhone">
-                  <Form.Label>Phone Number</Form.Label>
+                <Form.Group controlId="formBasicPassword">
+
+                  <div className="icon-prepend">
+                    <FaLock />
+                  </div>
                   <Form.Control
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    name="phone"
-                    value={formData.phone}
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={formData.password}
                     onChange={handleChange}
                   />
                 </Form.Group>
-              </>
-            )}
 
-            {isLogin && (
-              <p onClick={handleForgotPassword} className="forgot-password">
-                Forgot Password?
-              </p>
-            )}
+                {!isLogin && (
+                  <>
+                    <Form.Group controlId="formBasicName">
 
-            <Button variant="primary" type="submit">
-              {isLogin ? 'Login' : 'Sign Up'}
-            </Button>
+                      <div className="icon-prepend">
+                        <FaUser />
+                      </div>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter your name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                      />
+                    </Form.Group>
 
-            <p onClick={toggleForm} className="toggle-form">
-              {isLogin ? 'Don\'t have an account? Sign Up' : 'Already have an account? Login'}
-            </p>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+                    <Form.Group controlId="formBasicPhone">
+
+                      <div className="icon-prepend">
+                        <FaPhone />
+                      </div>
+                      <Form.Control
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                      />
+                    </Form.Group>
+                  </>
+                )}
+
+                {isLogin && (
+                  <p onClick={handleForgotPassword} className="forgot-password">
+                    Forgot Password? <FaQuestion />
+                  </p>
+                )}
+
+                <Button variant="primary" type="submit">
+                  {isLogin ? 'Login' : 'Sign Up'}
+                </Button>
+
+                <p onClick={toggleForm} className="toggle-form">
+                  {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Login'}
+                </p>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      <footer className="footer mt-5 text-center fixed-bottom">
+        <Container>
+          <Row>
+            <Col md={12}>
+              <span>&copy; 2023 ColorFuse. All rights reserved. </span>
+              <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+            </Col>
+          </Row>
+        </Container>
+      </footer>
+    </>
   );
 };
 

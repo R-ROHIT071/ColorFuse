@@ -7,7 +7,9 @@ import Selection from './pages/Selection';
 import Home from './pages/Home';
 import Poster from './pages/Poster';
 import Signup from './pages/SignUp';
-import Login from './pages/Login';
+import Dashboard from './pages/Dashboard'
+import { Provider } from 'react-redux';
+import store from './store';
 
 
 
@@ -41,8 +43,8 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "login",
-    element: <Login />,
+    path: "dashboard",
+    element: <Dashboard />,
   },
 
 ]);
@@ -50,7 +52,9 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
+  //  </React.StrictMode>
 );

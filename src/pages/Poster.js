@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import { Button, Container, Row, Col, Navbar, Nav, Form, Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import '../styles/poster.css';
 
 
 const Poster = () => {
 
   const [generatedImages, setGeneratedImages] = useState([]);
+  const [imageData, setImageData] = useState()
+
+  // State variables for form inputs
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
+  const [time, setTime] = useState('');
+  // const [dressCode, setDressCode] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   // Function to handle image generation
   const handleGenerate = (images) => {
@@ -23,26 +33,22 @@ const Poster = () => {
     return new Blob([byteArray], { type: contentType });
   };
 
-  // Function to handle logo change
-  const handleLogoChange = (e) => {
-    setLogo(e.target.files[0]);
-  };
 
   // Function to handle Poster generation
   const handleGenerateParty = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:3001/poster', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, location, time, dressCode }),
+        body: JSON.stringify({ title, location, time }),
       });
 
       const data = await response.json();
+
+      setImageData(data.results)
 
       if (data.success) {
         console.log('Success:');
@@ -58,7 +64,6 @@ const Poster = () => {
           }
         }));
 
-        console.log(images)
         handleGenerate(images);
 
       } else {
@@ -73,34 +78,34 @@ const Poster = () => {
 
   // ImageShowcase component
   const ImageShowcase = ({ images }) => {
+    const navigate = useNavigate();
+
+    const handleImageClick = (index) => {
+      const clickedImageData = imageData[index]
+      localStorage.setItem('title', title);
+      localStorage.setItem('location',location );
+      localStorage.setItem('time', time);
+      navigate('/postercanvas', { state: clickedImageData });
+    };
+
     return (
-      <div style={{ marginTop: '70px', textAlign: 'center',fontSize: '26px' }}>
+      <div style={{ marginTop: '70px', textAlign: 'center', fontSize: '26px' }}>
         {images.length > 0 && <p>Select a design</p>}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
           {images.map((imageBlob, index) => (
             <div key={index} style={{ margin: '10px', flexBasis: '30%' }}>
-              <a href={imageBlob} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={imageBlob}
-                  alt={`Image ${index + 1}`}
-                  style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
-                />
-              </a>
+              <img
+                src={imageBlob}
+                alt={`Image ${index + 1}`}
+                style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px', cursor: 'pointer' }}
+                onClick={() => handleImageClick(index)}
+              />
             </div>
           ))}
         </div>
       </div>
     );
   };
-
-
-  // State variables for form inputs
-  const [title, setTitle] = useState('');
-  const [location, setLocation] = useState('');
-  const [time, setTime] = useState('');
-  const [dressCode, setDressCode] = useState('');
-  const [logo, setLogo] = useState(null);
-  const [loading, setLoading] = useState(false);
 
 
   return (
@@ -148,14 +153,9 @@ const Poster = () => {
               <Form.Control type="text" value={time} onChange={(e) => setTime(e.target.value)} />
             </Form.Group>
 
-            <Form.Group controlId="formDressCode">
+            {/* <Form.Group controlId="formDressCode">
               <Form.Label>Any:</Form.Label>
               <Form.Control type="text" value={dressCode} onChange={(e) => setDressCode(e.target.value)} />
-            </Form.Group>
-
-            {/* <Form.Group controlId="formLogo">
-              <Form.Label>Logo:</Form.Label>
-              <Form.Control type="file" accept="image/*" onChange={handleLogoChange} />
             </Form.Group> */}
 
             <Button variant="primary" onClick={handleGenerateParty} disabled={loading}>
@@ -181,4 +181,5 @@ const Poster = () => {
 };
 
 export default Poster;
+
 
