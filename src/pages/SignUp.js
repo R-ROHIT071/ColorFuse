@@ -1,15 +1,14 @@
 import '../styles/signup.css';
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col, Navbar, Nav, InputGroup } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Navbar} from 'react-bootstrap';
 import { FaEnvelope, FaLock, FaUser, FaPhone, FaQuestion } from 'react-icons/fa';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
-import { auth, database, ref as dbRef, set,push } from '../firebase';
-import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { useSelector } from 'react-redux';
+import { auth, database, ref as dbRef, set } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -17,9 +16,17 @@ const AuthForm = () => {
     phone: '',
   });
 
+  const clearFormData = () => {
+    setFormData({
+      email: '',
+      password: '',
+      name: '',
+      phone: '',
+    });
+  };
 
   const navigate = useNavigate();
-  
+
   // For Background changing
   useEffect(() => {
     const backgroundImageLogin = `url(${require('../images/login.jpg')})`;
@@ -39,22 +46,25 @@ const AuthForm = () => {
   };
 
   const toggleForm = () => {
+    setError(null);
     setIsLogin(!isLogin);
   };
 
   const handleForgotPassword = async () => {
     try {
       await sendPasswordResetEmail(auth, formData.email);
-      console.log('Password reset email sent successfully');
+      alert('Password reset email sent successfully to', formData.email);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
+      setError(errorMessage);
       console.error('Error sending password reset email:', errorCode, errorMessage);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
     try {
       if (isLogin) {
@@ -62,7 +72,8 @@ const AuthForm = () => {
         const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
         const userId = userCredential.user.uid;
         console.log("User logged in!")
-        localStorage.setItem('UID',userId)
+        clearFormData();
+        localStorage.setItem('UID', userId)
         navigate('/dashboard');
 
       } else {
@@ -76,13 +87,15 @@ const AuthForm = () => {
           name,
           phone,
         });
+        clearFormData();
         console.log('User signed up:', userCredential.user);
-        localStorage.setItem('UID',userId)
+        localStorage.setItem('UID', userId)
         navigate('/dashboard');
       }
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
+      setError(errorMessage);
       console.error('Authentication error:', errorCode, errorMessage);
     }
   };
@@ -111,6 +124,7 @@ const AuthForm = () => {
             <Col md={6} className={`auth-form ${isLogin ? 'login' : 'signup'}`}>
               <h2 style={{ textAlign: 'center' }}>{isLogin ? 'Login' : 'Sign Up'}</h2>
               <Form onSubmit={handleSubmit}>
+              {error && <p style={{ color: 'red' }}>{error.split(': ')[1]}</p>}
                 <Form.Group controlId="formBasicEmail">
                   <div className="icon-prepend">
                     <FaEnvelope />
@@ -194,7 +208,7 @@ const AuthForm = () => {
           <Row>
             <Col md={12}>
               <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-              <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+              <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
             </Col>
           </Row>
         </Container>

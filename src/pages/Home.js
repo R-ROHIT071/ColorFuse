@@ -1,9 +1,11 @@
 // src/components/HomePage.js
 
 import React, { useEffect, useState } from 'react';
-import { Animator, ScrollContainer, ScrollPage, batch, Fade, FadeIn, FadeOut, Move, MoveIn, MoveOut, Sticky, StickyIn, StickyOut, Zoom, ZoomIn, ZoomOut } from "react-scroll-motion";
+import { Animator, ScrollContainer, ScrollPage, batch, Fade, Move, MoveOut, Sticky } from "react-scroll-motion";
 import { Button, Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
 import { NavLink, Link } from 'react-router-dom';
+import { FaEnvelope, FaPhone, FaSignOutAlt } from 'react-icons/fa';
+import { MdDashboard } from 'react-icons/md';
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from 'react-redux';
 import { auth } from '../firebase';
@@ -12,7 +14,7 @@ import '../styles/home.css';
 
 const HomePage = () => {
     const FadeUp = batch(Fade(), Move(0, 1000), Sticky());
-    const FadeUptwo = batch(Fade(), MoveOut(0, -500), Sticky());
+    const FadeUp2 = batch(MoveOut(0, -1000), Move(0, 700), Sticky());
 
     const [Active, setActive] = useState(false);
     const dispatch = useDispatch();
@@ -56,8 +58,12 @@ const HomePage = () => {
                         ColorFuse
                     </Navbar.Brand>
                     <Nav className="ml-auto">
-                        {Active && <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>}
-                        {Active && <Nav.Link onClick={handleFirebaseLogout}>Logout</Nav.Link>}
+                        {Active && <Nav.Link as={Link} to="/dashboard">
+                            <MdDashboard /> Dashboard
+                        </Nav.Link>}
+                        {Active && <Nav.Link onClick={handleFirebaseLogout}>
+                            <FaSignOutAlt /> Logout
+                        </Nav.Link>}
                     </Nav>
                 </Container>
             </Navbar>
@@ -117,7 +123,7 @@ const HomePage = () => {
 
                 {/* Product Branding Feature */}
                 <ScrollPage>
-                    <Animator animation={FadeUptwo}>
+                    <Animator animation={FadeUp2}>
                         <Container className="features-section mt-5 text-center">
                             <Row>
                                 <Col md={6}>
@@ -155,15 +161,30 @@ const HomePage = () => {
             </ScrollContainer>
 
             {/* About Section */}
-            <Container className="about-section mt-5 text-center">
-                <Row>
-                    <Col md={12}>
+            <Container className="about-section mt-5">
+                <Row className="align-items-center">
+                    {/* Left Column: About */}
+                    <Col md={8} className="order-md-1 order-2">
                         <div className="about-box">
-                            <h2>About Us</h2>
+                            <h2 className="section-heading">About Us</h2>
                             <p>ColorFuse is a revolutionary platform that leverages artificial intelligence</p>
                             <p>to bring creativity to new heights. Our mission is to empower individuals and</p>
-                            <p> businesses with unique and innovative design solutions.</p>
+                            <p>businesses with unique and innovative design solutions.</p>
+                        </div>
+                    </Col>
 
+                    {/* Right Column: Contact Details */}
+                    <Col md={3} className="order-md-1 order-2">
+                        <div className="contact-box">
+                            <h2 className="section-heading">Contact Us</h2>
+                            <div>
+                                <p>
+                                    <FaEnvelope /> Email: example@email.com
+                                </p>
+                                <p>
+                                    <FaPhone /> Phone: (123) 456-7890
+                                </p>
+                            </div>
                         </div>
                     </Col>
                 </Row>
@@ -175,7 +196,7 @@ const HomePage = () => {
                     <Row>
                         <Col md={12}>
                             <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-                            <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+                            <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
                         </Col>
                     </Row>
                 </Container>

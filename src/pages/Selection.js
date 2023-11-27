@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Button, Container, Row, Col, Navbar, Nav, Form } from 'react-bootstrap';
 import '../styles/selection.css';
+import { FaImage, FaImages } from 'react-icons/fa';
 import ProductCanvas from "./ProductCanvas";
 
 
@@ -59,7 +60,7 @@ function Selection() {
                 </Container>
             </Navbar>
 
-            
+
             <Container className="mt-3">
                 {!Canvas &&
                     <div className="head">
@@ -68,36 +69,44 @@ function Selection() {
                     </div>
                 }
             </Container>
-            {!Canvas && (   <div className="blurry-image"></div>)}
+            {!Canvas && (<div className="blurry-image"></div>)}
             <Container>
                 {!Canvas && (
-                        <div className="form-container">
-                            <Form className="pform">
-                                <Form.Group controlId="frontView">
-                                    <Form.Label>Front View</Form.Label>
-                                    <Form.Control type="file" accept="image/*" ref={frontViewRef} required />
-                                </Form.Group>
+                    <div className="form-container">
+                        <Form className="pform">
+                            <Form.Group controlId="frontView">
+                                <Form.Label>
+                                    <FaImage /> Front View
+                                </Form.Label>
+                                <Form.Control type="file" accept="image/*" ref={frontViewRef} required />
+                            </Form.Group>
 
-                                <Form.Group controlId="backView">
-                                    <Form.Label>Back View</Form.Label>
-                                    <Form.Control type="file" accept="image/*" ref={backViewRef} required />
-                                </Form.Group>
+                            <Form.Group controlId="backView">
+                                <Form.Label>
+                                    <FaImage /> Back View
+                                </Form.Label>
+                                <Form.Control type="file" accept="image/*" ref={backViewRef} required />
+                            </Form.Group>
 
-                                <Form.Group controlId="sideView">
-                                    <Form.Label>Side View</Form.Label>
-                                    <Form.Control type="file" accept="image/*" ref={sideViewRef} />
-                                </Form.Group>
+                            <Form.Group controlId="sideView">
+                                <Form.Label>
+                                    <FaImage /> Side View
+                                </Form.Label>
+                                <Form.Control type="file" accept="image/*" ref={sideViewRef} />
+                            </Form.Group>
 
-                                <Form.Group controlId="additionalImages">
-                                    <Form.Label>Logo Images</Form.Label>
-                                    <Form.Control type="file" accept="image/*" ref={additionalImagesRef} multiple />
-                                </Form.Group>
+                            <Form.Group controlId="additionalImages">
+                                <Form.Label>
+                                    <FaImages /> Logo Images
+                                </Form.Label>
+                                <Form.Control type="file" accept="image/*" ref={additionalImagesRef} multiple />
+                            </Form.Group>
 
-                                <Button variant="primary" type="button" onClick={handleGenerateButtonClick}>
-                                    Generate
-                                </Button>
-                            </Form>
-                        </div>
+                            <Button variant="primary" type="button" onClick={handleGenerateButtonClick}>
+                                Generate
+                            </Button>
+                        </Form>
+                    </div>
                 )}
             </Container>
 
@@ -108,7 +117,7 @@ function Selection() {
                     <Row>
                         <Col md={12}>
                             <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-                            <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+                            <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
                         </Col>
                     </Row>
                 </Container>

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Row, Col, Navbar, Nav, Image } from 'react-bootstrap';
+import { Container, Row, Col, Navbar, Nav, Image } from 'react-bootstrap';
 import { get, child } from "firebase/database";
-import { auth, database, ref as dbRef, set,push } from '../firebase';
+import { auth, database, ref as dbRef, push } from '../firebase';
 import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import '../styles/dashboard.css'
+import { FaSignOutAlt } from 'react-icons/fa';
+import { IoMdImages, IoIosCube } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +16,7 @@ function Dashboard() {
     const [product, setProduct] = useState(false);
     const [allImageURLs, setAllImageURLs] = useState([]);
     const [allProductURLs, setallProductURLs] = useState([]);
+    const [blurBackground, setBlurBackground] = useState(true);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -38,61 +41,65 @@ function Dashboard() {
 
 
 
-    function upload(check){
-      const storage = getStorage();
-      const userId = localStorage.getItem('UID');
-      
-      if(check ===1){
-        const { fullName, name, extension, imageBase64 } = imageData
-        const userStorageRef = storageRef(storage, `${userId}/Posters/${fullName || name}`);
-  
-        // Upload image to Firebase Storage
-        uploadString(userStorageRef, imageBase64, 'data_url').then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((downloadURL) => {
-            const newData = {
-              imageURL: downloadURL,
-            };
-  
-            push(dbRef(database, `users/${userId}/Posters`), newData).then(() => {
-              console.log('Image uploaded and data stored successfully');
-  
+    function upload(check) {
+        const storage = getStorage();
+        const userId = localStorage.getItem('UID');
+
+        if (check === 1) {
+            const { fullName, name, extension, imageBase64 } = imageData
+            const userStorageRef = storageRef(storage, `${userId}/Posters/${fullName || name}`);
+
+            // Upload image to Firebase Storage
+            uploadString(userStorageRef, imageBase64, 'data_url').then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    const newData = {
+                        imageURL: downloadURL,
+                    };
+
+                    push(dbRef(database, `users/${userId}/Posters`), newData).then(() => {
+                        console.log('Image uploaded and data stored successfully');
+                        dispatch({ type: 'SET_POSTER_DATA', payload: null });
+                        dispatch({ type: 'SET_IMAGE_DATA', payload: null });
+
+                    }).catch((error) => {
+                        console.error('Error storing data in the database:', error);
+                    });
+                }).catch((error) => {
+                    console.error('Error getting download URL:', error);
+                });
             }).catch((error) => {
-              console.error('Error storing data in the database:', error);
+                console.error('Error uploading image to Firebase Storage:', error);
             });
-          }).catch((error) => {
-            console.error('Error getting download URL:', error);
-          });
-        }).catch((error) => {
-          console.error('Error uploading image to Firebase Storage:', error);
-        });
-  
-      }else if(check ===2){
-        const timestamp = new Date().getTime();
-        const userStorageRef = storageRef(storage, `${userId}/Products/${timestamp}`);
-  
-        uploadString(userStorageRef, productData, 'data_url').then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((downloadURL) => {
-            const newData = {
-              imageURL: downloadURL,
-            };
-  
-            push(dbRef(database, `users/${userId}/Products`), newData).then(() => {
-              console.log('Image uploaded and data stored successfully');
-  
+
+        } else if (check === 2) {
+            const timestamp = new Date().getTime();
+            const userStorageRef = storageRef(storage, `${userId}/Products/${timestamp}`);
+
+            uploadString(userStorageRef, productData, 'data_url').then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    const newData = {
+                        imageURL: downloadURL,
+                    };
+
+                    push(dbRef(database, `users/${userId}/Products`), newData).then(() => {
+                        console.log('Image uploaded and data stored successfully');
+                        dispatch({ type: 'SET_POSTER_DATA', payload: null });
+                        dispatch({ type: 'SET_IMAGE_DATA', payload: null });
+
+                    }).catch((error) => {
+                        console.error('Error storing data in the database:', error);
+                    });
+                }).catch((error) => {
+                    console.error('Error getting download URL:', error);
+                });
             }).catch((error) => {
-              console.error('Error storing data in the database:', error);
+                console.error('Error uploading image to Firebase Storage:', error);
             });
-          }).catch((error) => {
-            console.error('Error getting download URL:', error);
-          });
-        }).catch((error) => {
-          console.error('Error uploading image to Firebase Storage:', error);
-        });
-      }
-  
+        }
+
     }
 
-  
+
 
     function download(check) {
         if (check === 1) {
@@ -117,25 +124,36 @@ function Dashboard() {
         }
     }
 
-
     useEffect(() => {
-        if (imageData) {
-            upload(1)
-            download(1)
-        }
-        else if (productData) {
-            upload(2)
-            download(2)
-        }
-    }, [])
+        const fetchData = async () => {
+            try {
+                if (imageData) {
+                    await upload(1);
+                    await download(1);
+                } else if (productData) {
+                    await upload(2);
+                    await download(2);
+                }
 
-    useEffect(() => {
-        if (poster) {
-            getURLs(1);
-        } else if (product) {
-            getURLs(2);
-        }
-    }, [poster, product]);
+                if (poster) {
+                    await getURLs(1);
+                } else if (product) {
+                    await getURLs(2);
+                }
+
+                document.body.classList.add('blur');
+                const blurInterval = setInterval(() => {
+                    document.body.classList.remove('blur');
+                    clearInterval(blurInterval);
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchData();
+    }, [imageData, productData, poster, product]);
 
 
     function getURLs(check) {
@@ -172,7 +190,7 @@ function Dashboard() {
                             .map(postData => postData.imageURL)
                             .filter(Boolean);
 
-                            setallProductURLs(imageURLs);
+                        setallProductURLs(imageURLs);
                     } else {
                         console.log('No Product data found for the user');
                     }
@@ -210,20 +228,26 @@ function Dashboard() {
                         ColorFuse
                     </Navbar.Brand>
                     <Nav className="ml-auto">
-                        <Nav.Link onClick={handlePosterClick}>Posters</Nav.Link>
-                        <Nav.Link onClick={handleProductClick}>Products</Nav.Link>
+                        <Nav.Link onClick={handlePosterClick} active>
+                            <IoMdImages /> Posters
+                        </Nav.Link>
+                        <Nav.Link onClick={handleProductClick}>
+                            <IoIosCube /> Products
+                        </Nav.Link>
                     </Nav>
                     <Nav className="ml-auto">
-                        <Nav.Link onClick={handleFirebaseLogout}>Logout</Nav.Link>
+                        <Nav.Link onClick={handleFirebaseLogout}>
+                            <FaSignOutAlt /> Logout
+                        </Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
 
             {poster && (
                 <div className="poster-container">
-                    <h1>Hello</h1>
+                    <h2 style={{ textAlign: 'center', color: '#333', marginBottom: '20px' }}>Your Posters</h2>
                     {allImageURLs.length === 0 ? (
-                        <p>No posters found.</p>
+                        <p style={{ textAlign: 'center', fontSize: '18px', color: '#555' }}>No posters yet.</p>
                     ) : (
                         <Row className="scrollable-row">
                             {allImageURLs.map((url, index) => (
@@ -241,9 +265,9 @@ function Dashboard() {
 
             {product && (
                 <div className="poster-container">
-                    <h1>Hello</h1>
+                    <h2 style={{ textAlign: 'center', color: '#333', marginBottom: '20px' }}>Your Product Images</h2>
                     {allProductURLs.length === 0 ? (
-                        <p>No Product Images found.</p>
+                        <p style={{ textAlign: 'center', fontSize: '18px', color: '#555' }}>No product images yet.</p>
                     ) : (
                         <Row className="scrollable-row">
                             {allProductURLs.map((url, index) => (
@@ -256,14 +280,16 @@ function Dashboard() {
                         </Row>
                     )}
                 </div>
+
             )}
+
 
             <footer className="footer mt-5 text-center fixed-bottom">
                 <Container>
                     <Row>
                         <Col md={12}>
                             <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-                            <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+                            <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
                         </Col>
                     </Row>
                 </Container>

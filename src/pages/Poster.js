@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import { Button, Container, Row, Col, Navbar, Nav, Form, Spinner } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Container, Row, Col, Navbar, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { FaFileAlt, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
 import '../styles/poster.css';
 
 
@@ -13,9 +14,8 @@ const Poster = () => {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [time, setTime] = useState('');
-  // const [dressCode, setDressCode] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [isTitleValid, setIsTitleValid] = useState(true);
 
   // Function to handle image generation
   const handleGenerate = (images) => {
@@ -36,7 +36,15 @@ const Poster = () => {
 
   // Function to handle Poster generation
   const handleGenerateParty = async () => {
+
+    if (!title.trim()) {
+      // If title is empty, set isTitleValid to false
+      setIsTitleValid(false);
+      // Stop the rest of the code execution
+      return;
+    }
     try {
+      setIsTitleValid(true);
       setLoading(true);
       const response = await fetch('http://localhost:3001/poster', {
         method: 'POST',
@@ -83,7 +91,7 @@ const Poster = () => {
     const handleImageClick = (index) => {
       const clickedImageData = imageData[index]
       localStorage.setItem('title', title);
-      localStorage.setItem('location',location );
+      localStorage.setItem('location', location);
       localStorage.setItem('time', time);
       navigate('/postercanvas', { state: clickedImageData });
     };
@@ -123,10 +131,6 @@ const Poster = () => {
             />{' '}
             ColorFuse
           </Navbar.Brand>
-          <Nav className="ml-auto">
-            <Nav.Link href="">About</Nav.Link>
-            <Nav.Link href="">Contact</Nav.Link>
-          </Nav>
         </Container>
       </Navbar>
       <div>
@@ -139,24 +143,26 @@ const Poster = () => {
         <div className="form-container">
           <Form className="pform">
             <Form.Group controlId="formTitle">
-              <Form.Label>Title:</Form.Label>
-              <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Form.Label>
+               <FaFileAlt /> Title :
+              </Form.Label>
+              <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="EX: Halloween Party (required)" />
+              {!isTitleValid && <p style={{ color: 'red', marginTop: '5px' }}>Title is required.</p>}
             </Form.Group>
 
             <Form.Group controlId="formLocation">
-              <Form.Label>Location:</Form.Label>
-              <Form.Control type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+              <Form.Label>
+              <FaMapMarkerAlt /> Location :
+              </Form.Label>
+              <Form.Control type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="EX: The Fixx Koramangala" />
             </Form.Group>
 
             <Form.Group controlId="formTime">
-              <Form.Label>Time:</Form.Label>
-              <Form.Control type="text" value={time} onChange={(e) => setTime(e.target.value)} />
+              <Form.Label>
+               <FaEdit /> Any other text to be placed :
+                </Form.Label>
+              <Form.Control type="text" value={time} onChange={(e) => setTime(e.target.value)} placeholder="EX: Dress Code Black" />
             </Form.Group>
-
-            {/* <Form.Group controlId="formDressCode">
-              <Form.Label>Any:</Form.Label>
-              <Form.Control type="text" value={dressCode} onChange={(e) => setDressCode(e.target.value)} />
-            </Form.Group> */}
 
             <Button variant="primary" onClick={handleGenerateParty} disabled={loading}>
               {loading ? <Spinner animation="border" size="sm" /> : 'Generate'}
@@ -171,7 +177,7 @@ const Poster = () => {
           <Row>
             <Col md={12}>
               <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-              <img src="/images/square.png" alt="Your Company Logo" className="logo" />
+              <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
             </Col>
           </Row>
         </Container>
@@ -181,5 +187,6 @@ const Poster = () => {
 };
 
 export default Poster;
+
 
 
