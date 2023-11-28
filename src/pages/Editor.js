@@ -52,13 +52,12 @@ function Editor() {
     localStorage.setItem('currentIndex', currentIndex)
 
     const Title = localStorage.getItem('title');
-    const Location = localStorage.getItem('location') || "Location";
-    const Time = localStorage.getItem('time') || "Any other text";
+    const Time = localStorage.getItem('time') || "Text main";
 
     parsedData.imgSrc = dataUrl;
     parsedData.annotations['Text-438804911553'].text = Title;
-    parsedData.annotations['Text-191114871028'].text = Location;
-    parsedData.annotations['Text-1076420494916'].text = Time;
+    parsedData.annotations['Text-191114871028'].text = Time;
+    parsedData.annotations['Text-1076420494916'].text =  "Any other text";
 
     setIsLoading(false);
 

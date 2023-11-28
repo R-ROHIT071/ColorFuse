@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Container, Row, Col, Navbar, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { FaFileAlt, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
+import { FaFileAlt, FaEdit, FaInfoCircle } from 'react-icons/fa';
+import {API} from '../api'
 import '../styles/poster.css';
+
 
 
 const Poster = () => {
@@ -16,6 +18,9 @@ const Poster = () => {
   const [time, setTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [isTitleValid, setIsTitleValid] = useState(true);
+  const [titleH, setTitltH] = useState('null')
+  const [regen, setRegen] = useState(false)
+  const [error, setError] = useState(null)
 
   // Function to handle image generation
   const handleGenerate = (images) => {
@@ -36,17 +41,18 @@ const Poster = () => {
 
   // Function to handle Poster generation
   const handleGenerateParty = async () => {
-
+    setError(null);
+    
     if (!title.trim()) {
-      // If title is empty, set isTitleValid to false
       setIsTitleValid(false);
-      // Stop the rest of the code execution
       return;
     }
+
     try {
       setIsTitleValid(true);
       setLoading(true);
-      const response = await fetch('http://localhost:3001/poster', {
+
+      const response = await fetch( API , {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,12 +79,15 @@ const Poster = () => {
         }));
 
         handleGenerate(images);
+        setRegen(true);
+        setTitltH(title);
 
       } else {
         console.error('Error during party generation:', data.error);
       }
     } catch (error) {
       console.error('Error during party generation:', error.message);
+      setError(error.message)
     } finally {
       setLoading(false);
     }
@@ -91,7 +100,7 @@ const Poster = () => {
     const handleImageClick = (index) => {
       const clickedImageData = imageData[index]
       localStorage.setItem('title', title);
-      localStorage.setItem('location', location);
+      // localStorage.setItem('location', location);
       localStorage.setItem('time', time);
       navigate('/postercanvas', { state: clickedImageData });
     };
@@ -142,9 +151,10 @@ const Poster = () => {
         <div className="blurry-image2"></div>
         <div className="form-container">
           <Form className="pform">
+            {error &&(<p style={{ color: 'red' }}>{error}</p>)}
             <Form.Group controlId="formTitle">
               <Form.Label>
-               <FaFileAlt /> Title :
+                <FaFileAlt /> Title :
               </Form.Label>
               <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="EX: Halloween Party (required)" />
               {!isTitleValid && <p style={{ color: 'red', marginTop: '5px' }}>Title is required.</p>}
@@ -152,21 +162,27 @@ const Poster = () => {
 
             <Form.Group controlId="formLocation">
               <Form.Label>
-              <FaMapMarkerAlt /> Location :
+                <FaInfoCircle /> Description :
               </Form.Label>
-              <Form.Control type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="EX: The Fixx Koramangala" />
+              <Form.Control type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="EX: Haunted Atmosphere, Fog, and Mystical Lights" />
             </Form.Group>
 
             <Form.Group controlId="formTime">
               <Form.Label>
-               <FaEdit /> Any other text to be placed :
-                </Form.Label>
+                <FaEdit /> Any other text to be placed :
+              </Form.Label>
               <Form.Control type="text" value={time} onChange={(e) => setTime(e.target.value)} placeholder="EX: Dress Code Black" />
             </Form.Group>
 
+            {titleH === title ? (
+            <Button variant={regen ? 'secondary' : 'primary'} onClick={handleGenerateParty} disabled={loading}>
+              {loading ? <Spinner animation="border" size="sm" /> : regen ? 'Regenerate' : 'Generate'}
+            </Button>
+          ) : (
             <Button variant="primary" onClick={handleGenerateParty} disabled={loading}>
               {loading ? <Spinner animation="border" size="sm" /> : 'Generate'}
             </Button>
+          )}
           </Form>
         </div>
         {/* ImageShowcase component */}
