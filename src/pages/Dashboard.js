@@ -16,7 +16,6 @@ function Dashboard() {
     const [product, setProduct] = useState(false);
     const [allImageURLs, setAllImageURLs] = useState([]);
     const [allProductURLs, setallProductURLs] = useState([]);
-    const [blurBackground, setBlurBackground] = useState(true);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();

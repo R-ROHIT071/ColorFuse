@@ -42,7 +42,7 @@ function Editor() {
     setImageSrc(dataUrl);
 
     let currentIndex = localStorage.getItem('currentIndex') || 0;
-    if (currentIndex == 5) {
+    if (currentIndex === 5) {
       currentIndex = 0
     } else {
       currentIndex++
