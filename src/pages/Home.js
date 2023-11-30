@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Animator, ScrollContainer, ScrollPage, batch, Fade, Move, MoveOut, Sticky } from "react-scroll-motion";
 import { Button, Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
 import { NavLink, Link } from 'react-router-dom';
-import { FaEnvelope, FaPhone, FaSignOutAlt } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from 'react-redux';
@@ -15,6 +15,7 @@ import '../styles/home.css';
 const HomePage = () => {
     const FadeUp = batch(Fade(), Move(0, 1000), Sticky());
     const FadeUp2 = batch(MoveOut(0, -1000), Move(0, 700), Sticky());
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const [Active, setActive] = useState(false);
     const dispatch = useDispatch();
@@ -35,11 +36,27 @@ const HomePage = () => {
             await auth.signOut();
             dispatch({ type: 'SET_POSTER_DATA', payload: null });
             dispatch({ type: 'SET_IMAGE_DATA', payload: null });
-            navigate('/');
+            localStorage.removeItem('UID');
+            navigate('/', { replace: true });
         } catch (error) {
             console.error('Error logging out:', error.message);
         }
     };
+
+    //server health  test
+    fetch(backendUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status}`);
+            }
+            return response.text(); 
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 
 
     return (
@@ -63,6 +80,9 @@ const HomePage = () => {
                         </Nav.Link>}
                         {Active && <Nav.Link onClick={handleFirebaseLogout}>
                             <FaSignOutAlt /> Logout
+                        </Nav.Link>}
+                        {!Active && <Nav.Link as={Link} to="/signup">
+                            <FaSignInAlt /> Login
                         </Nav.Link>}
                     </Nav>
                 </Container>
@@ -131,15 +151,14 @@ const HomePage = () => {
                                         <div className="text-container">
                                             <h2 style={{ width: '500px' }}>Product Branding</h2>
                                             <p>
-                                                Give your products a unique identity with our custom branding
-                                                solutions. Whether you're launching a new product or
-                                                rebranding, our tools provide you with the flexibility to
-                                                create a brand that resonates with your audience.
+                                                Revitalize your product image with our specialized branding solutions.
+                                                Easily tweak colors and strategically place logos with our tools.
+                                                Cultivate a distinctive brand identity that captivates your audience and elevates your presence.
                                             </p>
                                             <Button
                                                 variant="success"
                                                 size="lg"
-                                                as={NavLink}   // Use NavLink instead of Link
+                                                as={NavLink}
                                                 to="/product"
                                                 className="brand-button"
                                             >
@@ -179,7 +198,7 @@ const HomePage = () => {
                             <h2 className="section-heading">Contact Us</h2>
                             <div>
                                 <p>
-                                    <FaEnvelope /> Email: example@email.com
+                                    <FaEnvelope /> Email: colorfuse@gmail.com
                                 </p>
                                 <p>
                                     <FaPhone /> Phone: (123) 456-7890
@@ -196,7 +215,7 @@ const HomePage = () => {
                     <Row>
                         <Col md={12}>
                             <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-                            <img src="/images/logo.jpg" alt="Your Company Logo" className="logo" />
+                            <img src="/images/square.png" alt="/images/logo.jpg" className="logo" />
                         </Col>
                     </Row>
                 </Container>

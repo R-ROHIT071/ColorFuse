@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Container, Row, Col, Navbar, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaFileAlt, FaEdit, FaInfoCircle } from 'react-icons/fa';
-import {API} from '../api'
 import '../styles/poster.css';
 
 
@@ -11,6 +10,8 @@ const Poster = () => {
 
   const [generatedImages, setGeneratedImages] = useState([]);
   const [imageData, setImageData] = useState()
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const posterEndpoint = '/poster';
 
   // State variables for form inputs
   const [title, setTitle] = useState('');
@@ -52,7 +53,7 @@ const Poster = () => {
       setIsTitleValid(true);
       setLoading(true);
 
-      const response = await fetch( API , {
+      const response = await fetch( `${backendUrl}${posterEndpoint}` , {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +101,6 @@ const Poster = () => {
     const handleImageClick = (index) => {
       const clickedImageData = imageData[index]
       localStorage.setItem('title', title);
-      // localStorage.setItem('location', location);
       localStorage.setItem('time', time);
       navigate('/postercanvas', { state: clickedImageData });
     };
@@ -162,7 +162,7 @@ const Poster = () => {
 
             <Form.Group controlId="formLocation">
               <Form.Label>
-                <FaInfoCircle /> Description :
+                <FaInfoCircle /> Additional details :
               </Form.Label>
               <Form.Control type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="EX: Haunted Atmosphere, Fog, and Mystical Lights" />
             </Form.Group>

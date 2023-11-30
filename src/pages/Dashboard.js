@@ -32,7 +32,8 @@ function Dashboard() {
             await auth.signOut();
             dispatch({ type: 'SET_POSTER_DATA', payload: null });
             dispatch({ type: 'SET_IMAGE_DATA', payload: null });
-            navigate('/');
+            localStorage.removeItem('UID');
+            navigate('/', { replace: true });
         } catch (error) {
             console.error('Error logging out:', error.message);
         }
@@ -123,15 +124,21 @@ function Dashboard() {
         }
     }
 
+
     useEffect(() => {
+        let downloadCompleted = false;
+
         const fetchData = async () => {
             try {
-                if (imageData) {
+                document.body.classList.add('blur');
+                 if (imageData && !downloadCompleted) {
                     await upload(1);
                     await download(1);
-                } else if (productData) {
+                    downloadCompleted = true;
+                } else if (productData && !downloadCompleted) {
                     await upload(2);
                     await download(2);
+                    downloadCompleted = true;
                 }
 
                 if (poster) {
@@ -139,12 +146,7 @@ function Dashboard() {
                 } else if (product) {
                     await getURLs(2);
                 }
-
-                document.body.classList.add('blur');
-                const blurInterval = setInterval(() => {
-                    document.body.classList.remove('blur');
-                    clearInterval(blurInterval);
-                }, 2000);
+                document.body.classList.remove('blur');
 
             } catch (error) {
                 console.error('Error:', error);
