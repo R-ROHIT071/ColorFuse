@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth} from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
@@ -20,7 +20,6 @@ function Editor() {
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,10 +32,12 @@ function Editor() {
 
   ]
 
+  const imageBase = useSelector((state) => state.imageBase64)
+
 
   useEffect(() => {
-    const clickedImageData = location.state;
-    const blob = clickedImageData && base64ToBlob(clickedImageData.data, clickedImageData.type);
+
+    const blob = imageBase && base64ToBlob(imageBase.data, imageBase.type);
     const dataUrl = blob && URL.createObjectURL(blob);
     setImageSrc(dataUrl);
 

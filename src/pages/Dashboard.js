@@ -6,8 +6,7 @@ import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'fir
 import '../styles/dashboard.css'
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdImages, IoIosCube } from 'react-icons/io';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 

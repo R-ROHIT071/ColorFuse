@@ -3,6 +3,8 @@ import { Button, Container, Row, Col, Navbar, Form, Spinner } from 'react-bootst
 import { useNavigate } from 'react-router-dom';
 import { FaFileAlt, FaEdit, FaInfoCircle } from 'react-icons/fa';
 import '../styles/poster.css';
+import { useDispatch } from 'react-redux';
+
 
 
 
@@ -10,8 +12,11 @@ const Poster = () => {
 
   const [generatedImages, setGeneratedImages] = useState([]);
   const [imageData, setImageData] = useState()
+
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const posterEndpoint = '/poster';
+
+  const dispatch = useDispatch();
 
   // State variables for form inputs
   const [title, setTitle] = useState('');
@@ -102,7 +107,16 @@ const Poster = () => {
       const clickedImageData = imageData[index]
       localStorage.setItem('title', title);
       localStorage.setItem('time', time);
-      navigate('/postercanvas', { state: clickedImageData });
+
+      dispatch({ type: 'SET_IMAGE_BASE64', payload: clickedImageData });
+      dispatch({ type: 'SET_POSTER_VAL', payload: true });
+      const userId = localStorage.getItem('UID');
+      
+      if (userId === null || userId === undefined || userId.trim() === '') {
+        navigate('/signup');
+      }else{
+        navigate('/postercanvas')
+      }
     };
 
     return (
@@ -203,6 +217,7 @@ const Poster = () => {
 };
 
 export default Poster;
+
 
 
 

@@ -1,4 +1,4 @@
-body{
+body {
   height: 100%;
   margin: 0;
   padding-bottom: 20px;
@@ -13,15 +13,42 @@ code {
 }
 
 /* topbar */
-.sc-21g986-0.jrRyTH.FIE_topbar{
- background-color: aliceblue;
-}
-/* main canvas div */
-.konvajs-content{
-  background-color: aliceblue;
+.sc-21g986-0.jrRyTH.FIE_topbar {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
 }
 
-.sc-fvaj5j-0.kirEIB.FIE_watermark-add-wrapper{
+/* main canvas div */
+.konvajs-content {
+  border: 1px solid #ccc;
+  background-color: aliceblue;
+  box-shadow: 0 0 10px rgba(173, 216, 230, 0.8);
+}
+
+/* Side Bar */
+.sc-qhd6ow-0.jHcBoD.FIE_tabs {
+  background-color: #f1f1f1;
+  float: left;
   padding: 10px;
 
+}
+/* Toolbar wrapper */
+.sc-dwg14p-0.fhHeHN.FIE_tools-bar-wrapper{
+  background-color: #f1f1f1;
+  padding: 10px;
+}
+
+.sc-fvaj5j-0.kirEIB.FIE_watermark-add-wrapper {
+  padding: 10px;
+
+}
+
+@media print {
+
+  html,
+  body {
+    display: none;
+  }
 }

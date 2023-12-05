@@ -4,7 +4,9 @@ import { createStore } from 'redux';
 
 const initialState = {
   imageData: null,
-  posterData: null, // New state for poster data
+  posterData: null, 
+  imageBase64: null,
+  posterVal: false,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -18,6 +20,16 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         posterData: action.payload,
+      };
+      case 'SET_IMAGE_BASE64':
+      return {
+        ...state,
+        imageBase64: action.payload,
+      };
+    case 'SET_POSTER_VAL': 
+      return {
+        ...state,
+        posterVal: action.payload,
       };
     default:
       return state;

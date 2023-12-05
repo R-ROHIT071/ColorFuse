@@ -1,10 +1,11 @@
 import '../styles/signup.css';
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col, Navbar} from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Navbar } from 'react-bootstrap';
 import { FaEnvelope, FaLock, FaUser, FaPhone, FaQuestion } from 'react-icons/fa';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import { auth, database, ref as dbRef, set } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,6 +26,8 @@ const AuthForm = () => {
     });
   };
 
+  const posertOn = useSelector((state) => state.posterVal)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // For Background changing
@@ -74,7 +77,13 @@ const AuthForm = () => {
         console.log("User logged in!")
         clearFormData();
         localStorage.setItem('UID', userId)
-        navigate('/dashboard');
+        if (posertOn === true) {
+          dispatch({ type: 'SET_POSTER_VAL', payload: false });
+          navigate('/postercanvas')
+        } else {
+          dispatch({ type: 'SET_POSTER_VAL', payload: false });
+          navigate('/dashboard');
+        }
 
       } else {
         // Sign up
@@ -90,7 +99,13 @@ const AuthForm = () => {
         clearFormData();
         console.log('User signed up:', userCredential.user);
         localStorage.setItem('UID', userId)
-        navigate('/dashboard');
+        if (posertOn === true) {
+          dispatch({ type: 'SET_POSTER_VAL', payload: false });
+          navigate('/postercanvas')
+        } else {
+          dispatch({ type: 'SET_POSTER_VAL', payload: false });
+          navigate('/dashboard');
+        }
       }
     } catch (error) {
       const errorCode = error.code;
@@ -124,7 +139,7 @@ const AuthForm = () => {
             <Col md={6} className={`auth-form ${isLogin ? 'login' : 'signup'}`}>
               <h2 style={{ textAlign: 'center' }}>{isLogin ? 'Login' : 'Sign Up'}</h2>
               <Form onSubmit={handleSubmit}>
-              {error && <p style={{ color: 'red' }}>{error.split(': ')[1]}</p>}
+                {error && <p style={{ color: 'red' }}>{error.split(': ')[1]}</p>}
                 <Form.Group controlId="formBasicEmail">
                   <div className="icon-prepend">
                     <FaEnvelope />
