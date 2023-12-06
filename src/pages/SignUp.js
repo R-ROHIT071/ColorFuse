@@ -56,7 +56,7 @@ const AuthForm = () => {
   const handleForgotPassword = async () => {
     try {
       await sendPasswordResetEmail(auth, formData.email);
-      alert('Password reset email sent successfully to your email');
+      alert('Password reset email sent successfully to your email!');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
