@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth} from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -35,11 +34,8 @@ function Editor() {
   const imageBase = useSelector((state) => state.imageBase64)
 
 
-  useEffect(() => {
 
-    const blob = imageBase && base64ToBlob(imageBase.data, imageBase.type);
-    const dataUrl = blob && URL.createObjectURL(blob);
-    setImageSrc(dataUrl);
+  useEffect(() => {
 
     let currentIndex = localStorage.getItem('currentIndex') || 0;
     const parsedData = JSON.parse(design[currentIndex])
@@ -57,7 +53,7 @@ function Editor() {
     const Title = localStorage.getItem('title');
     const Time = localStorage.getItem('time') || "Text main";
 
-    parsedData.imgSrc = dataUrl;
+    parsedData.imgSrc = imageBase;
     parsedData.annotations['Text-438804911553'].text = Title;
     parsedData.annotations['Text-191114871028'].text = Time;
     parsedData.annotations['Text-1076420494916'].text =  "Any other text";
@@ -68,17 +64,6 @@ function Editor() {
       setLoadedDesignState(parsedData)
     }
   },[]);
-
-
-  const base64ToBlob = (base64String, contentType) => {
-    const byteCharacters = atob(base64String);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType });
-  };
 
 
   const closeImgEditor = () => {
@@ -116,7 +101,7 @@ function Editor() {
         <FilerobotImageEditor
           loadableDesignState={loadedDesignState}
           // source="https://scaleflex.airstore.io/demo/stephen-walker-unsplash.jpg"
-          source={imageSrc}
+          source={imageBase}
           onSave={(imageData, designState) =>
           (
             SaveCan(imageData, designState)

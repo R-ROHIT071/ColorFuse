@@ -33,22 +33,10 @@ const Poster = () => {
     setGeneratedImages(images);
   };
 
-  // Function to convert base64 string to Blob
-  const base64ToBlob = (base64String, contentType) => {
-    const byteCharacters = atob(base64String);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType });
-  };
-
-
   // Function to handle Poster generation
   const handleGenerateParty = async () => {
     setError(null);
-    
+
     if (!title.trim()) {
       setIsTitleValid(false);
       return;
@@ -58,7 +46,7 @@ const Poster = () => {
       setIsTitleValid(true);
       setLoading(true);
 
-      const response = await fetch( `${backendUrl}${posterEndpoint}` , {
+      const response = await fetch(`${backendUrl}${posterEndpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,21 +56,13 @@ const Poster = () => {
 
       const data = await response.json();
 
-      setImageData(data.results)
+      setImageData(data.results);
+      // console.log(data.results)
 
       if (data.success) {
         console.log('Success:');
 
-        const images = await Promise.all(data.results.map(async (result, index) => {
-          try {
-            const blob = await base64ToBlob(result.data, result.type);
-            const imageURL = URL.createObjectURL(blob);
-            return imageURL;
-          } catch (error) {
-            console.error(`Error creating URL for Image ${index + 1}:`, error);
-            throw error;
-          }
-        }));
+        const images = data.results.map(result => result.output[0]);
 
         handleGenerate(images);
         setRegen(true);
@@ -90,6 +70,7 @@ const Poster = () => {
 
       } else {
         console.error('Error during party generation:', data.error);
+        setError(data.error)
       }
     } catch (error) {
       console.error('Error during party generation:', error.message);
@@ -99,16 +80,18 @@ const Poster = () => {
     }
   };
 
+
   // ImageShowcase component
   const ImageShowcase = ({ images }) => {
     const navigate = useNavigate();
 
     const handleImageClick = (index) => {
       const clickedImageData = imageData[index]
+      let outputValue = clickedImageData.output[0];
       localStorage.setItem('title', title);
       localStorage.setItem('time', time);
 
-      dispatch({ type: 'SET_IMAGE_BASE64', payload: clickedImageData });
+      dispatch({ type: 'SET_IMAGE_BASE64', payload: outputValue });
       dispatch({ type: 'SET_POSTER_VAL', payload: true });
       const userId = localStorage.getItem('UID');
       
