@@ -14,6 +14,7 @@ const Poster = () => {
   const [imageData, setImageData] = useState()
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const token = process.env.AUTH_TOKEN
   const posterEndpoint = '/poster';
 
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const Poster = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-custom-token': process.env.AUTH_TOKEN,
+          'x-custom-token': token,
         },
         body: JSON.stringify({ title, location, time }),
       });
