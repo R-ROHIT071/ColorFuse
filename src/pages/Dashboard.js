@@ -43,10 +43,11 @@ function Dashboard() {
     function upload(check) {
         const storage = getStorage();
         const userId = localStorage.getItem('UID');
+        const timestamp = new Date().getTime();
 
         if (check === 1) {
             const { fullName, name, extension, imageBase64 } = imageData
-            const userStorageRef = storageRef(storage, `${userId}/Posters/${fullName || name}`);
+            const userStorageRef = storageRef(storage, `${userId}/Posters/${timestamp}`);
 
             // Upload image to Firebase Storage
             uploadString(userStorageRef, imageBase64, 'data_url').then((snapshot) => {
@@ -71,7 +72,6 @@ function Dashboard() {
             });
 
         } else if (check === 2) {
-            const timestamp = new Date().getTime();
             const userStorageRef = storageRef(storage, `${userId}/Products/${timestamp}`);
 
             uploadString(userStorageRef, productData, 'data_url').then((snapshot) => {

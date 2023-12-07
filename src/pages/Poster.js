@@ -50,6 +50,7 @@ const Poster = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-custom-token': process.env.AUTH_TOKEN,
         },
         body: JSON.stringify({ title, location, time }),
       });

@@ -137,7 +137,26 @@ const AuthForm = () => {
         <Container>
           <Row className="justify-content-md-center">
             <Col md={6} className={`auth-form ${isLogin ? 'login' : 'signup'}`}>
-              <h2 style={{ textAlign: 'center' }}>{isLogin ? 'Login' : 'Sign Up'}</h2>
+              <div>
+                {posertOn ? (
+                  <>
+                    <h2 style={{
+                      textAlign: 'center',
+                      fontSize: '1.8rem',
+                      fontWeight: 'bold',
+                      color: '#34495e',
+                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+                    }}>
+                      Zero Cost, Zero Barriers: Join ColorFuse for Free!
+                    </h2>
+                    <h3 style={{ textAlign: 'center', fontSize: '1.5rem', color: '#555', }}>
+                      {isLogin ? 'Login to continue' : 'Sign Up to continue'}
+                    </h3>
+                  </>
+                ) : (
+                  <h2 style={{ textAlign: 'center' }}>{isLogin ? 'Login!' : 'Sign Up!'}</h2>
+                )}
+              </div>
               <Form onSubmit={handleSubmit}>
                 {error && <p style={{ color: 'red' }}>{error.split(': ')[1]}</p>}
                 <Form.Group controlId="formBasicEmail">
@@ -201,7 +220,7 @@ const AuthForm = () => {
 
                 {isLogin && (
                   <p onClick={handleForgotPassword} className="forgot-password">
-                    Forgot Password? <FaQuestion />
+                    Forgot Password<FaQuestion />
                   </p>
                 )}
 

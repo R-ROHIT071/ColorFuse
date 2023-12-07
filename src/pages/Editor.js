@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth} from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
+import '../styles/editor.css'
 
 
 
@@ -16,7 +16,6 @@ import FilerobotImageEditor, {
 function Editor() {
   const [isImgEditorShown, setIsImgEditorShown] = useState(true);
   const [loadedDesignState, setLoadedDesignState] = useState(null);
-  const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();

@@ -21,6 +21,8 @@ const HomePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    dispatch({ type: 'SET_POSTER_VAL', payload: false });
+
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {

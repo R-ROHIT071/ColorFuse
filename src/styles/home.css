@@ -60,6 +60,7 @@ body {
   justify-content: space-between;
 
 }
+
 .visible {
   opacity: 1;
 }
@@ -80,7 +81,7 @@ body {
 .text-container {
   font-size: 24px;
   flex: 1;
-  padding-right: 20px; 
+  padding-right: 20px;
   text-align: left;
 }
 
@@ -95,8 +96,8 @@ body {
 
 .about-section {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 50px 20px;
   background-color: #ffffff;
@@ -140,3 +141,58 @@ body {
   height: 30px;
 }
 
+
+@media (max-width: 576px){
+  .button-card {
+    width: 100%;
+  }
+
+  .right-card {
+    margin-left: 0;
+  }
+
+  .feature-image {
+    display: none;
+  }
+
+  .features-box {
+    display: flex;
+    flex-direction: column;
+    margin-right: 0;
+    padding: 20px;
+  }
+
+  .text-container {
+    width: 70%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-size: 18px;
+  }
+
+  .button-div {
+    flex-direction: column;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .poster-button,
+  .brand-button {
+    margin-top: 10px;
+    width: 50%;
+    margin-bottom: 10px;
+  }
+
+  .homepage-background {
+    background-position: top;
+  }
+  .about-box,
+  .contact-box {
+    width: 100%;
+    max-width: none; 
+  }
+
+  .section-heading {
+    font-size: 24px; 
+  }
+
+}
