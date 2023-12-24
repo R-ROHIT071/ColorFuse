@@ -217,7 +217,7 @@ const HomePage = () => {
                     <Row>
                         <Col md={12}>
                             <span>&copy; 2023 ColorFuse. All rights reserved. </span>
-                            <img src="/images/square.png" alt="/images/logo.jpg" className="logo" />
+                            <img src="/images/logo.jpg" alt="/images/logo.jpg" className="logo" />
                         </Col>
                     </Row>
                 </Container>

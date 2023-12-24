@@ -24,3 +24,6 @@ body {
     border-bottom-right-radius: 2%;
     z-index: -1;
 }
+.poster-wrapper{
+  margin-bottom: 100px;
+}

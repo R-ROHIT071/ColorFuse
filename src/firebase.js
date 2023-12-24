@@ -5,16 +5,16 @@ import { getDatabase, ref, set, push } from "firebase/database";
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBF4jRvK9i7uawnCcl9t9lQhXjzhLe27B0",
-    authDomain: "creative-ai-364b0.firebaseapp.com",
-    projectId: "creative-ai-364b0",
-    databaseURL: "https://creative-ai-364b0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    storageBucket: "creative-ai-364b0.appspot.com",
-    messagingSenderId: "498263200200",
-    appId: "1:498263200200:web:576d115681308f033db0fd",
-    measurementId: "G-GD4LNJPVDP",
-};
-
+    apiKey: "AIzaSyA0i60LSW7jG3ArKwVneTP0nk-NpOoVu94",
+    authDomain: "prajna-37d1c.firebaseapp.com",
+    databaseURL: "https://prajna-37d1c.firebaseio.com",
+    projectId: "prajna-37d1c",
+    storageBucket: "prajna-37d1c.appspot.com",
+    messagingSenderId: "469291960872",
+    appId: "1:469291960872:web:08277c423a78407e9d831d",
+    measurementId: "G-YP9M24F51E"
+  };
+  
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);

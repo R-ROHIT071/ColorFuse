@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fabric } from 'fabric';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth} from '../firebase';
+import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import '../styles/productcanvas.css';
@@ -17,10 +17,10 @@ function App(props) {
   const dispatch = useDispatch();
 
   const handleNavigation = (check) => {
-    if(check ===1){
+    if (check === 1) {
       navigate('/dashboard');
     }
-    else if(check ===2){
+    else if (check === 2) {
       navigate('/signup');
     }
 
@@ -162,14 +162,14 @@ function App(props) {
 
     onAuthStateChanged(auth, (user) => {
 
-     dispatch({ type: 'SET_POSTER_DATA', payload: imageDataUrl });
-     
-     if (user) {
-       localStorage.setItem('UID',user.uid)
-       handleNavigation(1)
-     } else {
-      handleNavigation(2);
-     }
+      dispatch({ type: 'SET_POSTER_DATA', payload: imageDataUrl });
+
+      if (user) {
+        localStorage.setItem('UID', user.uid)
+        handleNavigation(1)
+      } else {
+        handleNavigation(2);
+      }
     });
 
   };
@@ -187,60 +187,60 @@ function App(props) {
         <canvas id="productCanvas" />
       </section>
       <div className='filter-main'>
-  <div className='filter-wrapper'>
-    <label htmlFor="rotationSlider" className='slider-label'>Color Rotation:</label>
-    <div className='slider-container'>
-      <input
-        type="range"
-        id="rotationSlider"
-        min="-1"
-        max="1"
-        step="0.01"
-        value={hueRotation}
-        onChange={(event) => handleSliderChange(event, setHueRotation)}
-      />
-      <div className='val-container'>
-        <span className='val'>{hueRotation}</span>
-      </div>
-    </div>
-  </div>
+        <div className='filter-wrapper'>
+          <label htmlFor="rotationSlider" className='slider-label'>Color Rotation:</label>
+          <div className='slider-container'>
+            <input
+              type="range"
+              id="rotationSlider"
+              min="-1"
+              max="1"
+              step="0.01"
+              value={hueRotation}
+              onChange={(event) => handleSliderChange(event, setHueRotation)}
+            />
+            <div className='val-container'>
+              <span className='val'>{hueRotation}</span>
+            </div>
+          </div>
+        </div>
 
-  <div className='filter-wrapper'>
-    <label htmlFor="saturationSlider" className='slider-label'>Saturation:</label>
-    <div className='slider-container'>
-      <input
-        type="range"
-        id="saturationSlider"
-        min="-1"
-        max="1"
-        step="0.01"
-        value={saturation}
-        onChange={(event) => handleSliderChange(event, setSaturation)}
-      />
-      <div className='val-container'>
-        <span className='val'>{saturation}</span>
-      </div>
-    </div>
-  </div>
+        <div className='filter-wrapper'>
+          <label htmlFor="saturationSlider" className='slider-label'>Saturation:</label>
+          <div className='slider-container'>
+            <input
+              type="range"
+              id="saturationSlider"
+              min="-1"
+              max="1"
+              step="0.01"
+              value={saturation}
+              onChange={(event) => handleSliderChange(event, setSaturation)}
+            />
+            <div className='val-container'>
+              <span className='val'>{saturation}</span>
+            </div>
+          </div>
+        </div>
 
-  <div className='filter-wrapper'>
-    <label htmlFor="contrastSlider" className='slider-label'>Contrast:</label>
-    <div className='slider-container'>
-      <input
-        type="range"
-        id="contrastSlider"
-        min="-1"
-        max="1"
-        step="0.01"
-        value={contrast}
-        onChange={(event) => handleSliderChange(event, setContrast)}
-      />
-      <div className='val-container'>
-        <span className='val'>{contrast}</span>
+        <div className='filter-wrapper'>
+          <label htmlFor="contrastSlider" className='slider-label'>Contrast:</label>
+          <div className='slider-container'>
+            <input
+              type="range"
+              id="contrastSlider"
+              min="-1"
+              max="1"
+              step="0.01"
+              value={contrast}
+              onChange={(event) => handleSliderChange(event, setContrast)}
+            />
+            <div className='val-container'>
+              <span className='val'>{contrast}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
     </div>
   );
 }

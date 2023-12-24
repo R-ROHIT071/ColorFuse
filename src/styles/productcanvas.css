@@ -1,9 +1,8 @@
 
 canvas {
     border: 1px solid #000000; 
-    width: 100%;
-    height: 600px;
-
+    width: auto;
+    height: auto;
   }
 
   .main-wrapper{
@@ -15,10 +14,11 @@ canvas {
 
   .filter-main {
     border: 2px solid #746e6e;
-    width: 650px;
-    margin: 20px;
+    width: 90%; 
+    max-width: 650px; 
+    margin: 20px auto; 
     padding: 20px;
-    background-color: #f0f0f0;
+    background: linear-gradient(to right, #b3e0ff, #ffd699);
     display: flex;
     justify-content: space-between;
     border-radius: 10px;
@@ -32,7 +32,7 @@ canvas {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
-    margin-left: -50px; /* Adjust the left margin as needed */
+    margin-left: -50px; 
   }
 
   .slider-container {
@@ -46,11 +46,20 @@ canvas {
   }
 
   .val-container {
-    width: 40px; /* Adjust the width as needed */
+    width: 40px; 
     text-align: center;
   }
 
   .val {
     font-size: 14px;
     color: #555;
+  }
+  @media (max-width: 768px) {
+    .filter-main {
+      flex-direction: column; 
+      align-items: stretch; 
+    }
+    .selection-wrapper {
+      margin-bottom: 10px; 
+    }
   }

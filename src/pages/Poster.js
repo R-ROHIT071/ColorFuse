@@ -140,7 +140,7 @@ const Poster = () => {
           </Navbar.Brand>
         </Container>
       </Navbar>
-      <div>
+      <div className='poster-wrapper'>
         {/* PartyForm component */}
         <div className="head2">
           <h1>Welcome to AI poster!</h1>
@@ -186,7 +186,7 @@ const Poster = () => {
         {/* ImageShowcase component */}
         <ImageShowcase images={generatedImages} />
       </div>
-      <footer className="footer mt-5 text-center">
+      <footer className="footer mt-5 text-center fixed-bottom">
         <Container>
           <Row>
             <Col md={12}>
