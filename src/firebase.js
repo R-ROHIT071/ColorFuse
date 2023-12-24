@@ -3,9 +3,10 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, set, push } from "firebase/database";
 import { getStorage } from 'firebase/storage';
+const API = process.env.REACT_APP_FIREBASE_API;
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA0i60LSW7jG3ArKwVneTP0nk-NpOoVu94",
+    apiKey: API,
     authDomain: "prajna-37d1c.firebaseapp.com",
     databaseURL: "https://prajna-37d1c.firebaseio.com",
     projectId: "prajna-37d1c",
